@@ -1,43 +1,77 @@
 package com.hemebiotech.analytics;
-
-import java.io.BufferedReader;
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.TreeMap;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
 
-public class AnalyticsCounter {
-	private static int headacheCount = 0;	
-	private static int rashCount = 0;		
-	private static int pupilCount = 0;		
-	
-	public static void main(String args[]) throws Exception {
-		// first get input
-		BufferedReader reader = new BufferedReader (new FileReader("symptoms.txt"));
-		String line = reader.readLine();
 
-		int i = 0;	
-		int headCount = 0;	// counts headaches
-		while (line != null) {
-			i++;	
-			System.out.println("symptom from file: " + line);
-			if (line.equals("headache")) {
-				headCount++;
-				System.out.println("number of headaches: " + headCount);
-			}
-			else if (line.equals("rush")) {
-				rashCount++;
-			}
-			else if (line.contains("pupils")) {
-				pupilCount++;
-			}
 
-			line = reader.readLine();	// get another symptom
-		}
+
+public class AnalyticsCounter{ 
+    private ISymptomReader reader;
+    private ISymptomWriter writer;
+    private String filepath;
+    
+
+    public AnalyticsCounter(ISymptomReader reader, ISymptomWriter writer){ 
+        this.reader = reader;
+        this.writer = writer;
+    }
+
+   		public List<String> getSymptoms() {
+		ArrayList<String> result = new ArrayList<String>();
 		
-		// next generate output
-		FileWriter writer = new FileWriter ("result.out");
-		writer.write("headache: " + headacheCount + "\n");
-		writer.write("rash: " + rashCount + "\n");
-		writer.write("dialated pupils: " + pupilCount + "\n");
-		writer.close();
+            if (filepath != null) {
+                try {
+                    BufferedReader reader = new BufferedReader (new FileReader(filepath));
+                    String line = reader.readLine();
+                    
+                    while (line != null) {
+                        result.add(line);
+                        line = reader.readLine();
+                    }
+                    reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+		
+		return result;
+	}
+
+
+    public Map<String, Integer> countSymptoms(List<String> symptoms){        
+        Map<String, Integer> symptomCount = new HashMap<>();
+
+            for (String symptom : symptoms) {
+            int count = symptomCount.getOrDefault(symptom, 0);
+            symptomCount.put(symptom, count + 1);
+            }
+        return symptomCount;
+    } 
+
+    public Map<String, Integer> sortSymptoms(Map<String, Integer> symptoms) {
+        Map<String, Integer> sortedSymptoms = new TreeMap<>(symptoms);
+
+        return sortedSymptoms;
+    }
+
+    public void writeSymptoms(Map<String, Integer> symptoms) {	
+        try {
+            BufferedWriter writer = new BufferedWriter (new FileWriter("result.out"));
+            for(Map.Entry<String, Integer> symptom:symptoms.entrySet()){
+                writer.write(symptom.getKey() + ": " + symptom.getValue() + "\n");
+            }	  
+        writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }	
 	}
 }
+ 
