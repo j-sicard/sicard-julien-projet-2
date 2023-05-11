@@ -1,4 +1,5 @@
 package com.hemebiotech.analytics;
+
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -10,49 +11,45 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 
-
-
-
-public class AnalyticsCounter{ 
+public class AnalyticsCounter { 
     private ISymptomReader reader;
     private ISymptomWriter writer;
     private String filepath;
-    
 
-    public AnalyticsCounter(ISymptomReader reader, ISymptomWriter writer){ 
+    public AnalyticsCounter(ISymptomReader reader, ISymptomWriter writer) { 
         this.reader = reader;
         this.writer = writer;
     }
 
-   		public List<String> getSymptoms() {
-		ArrayList<String> result = new ArrayList<String>();
-		
-            if (filepath != null) {
-                try {
-                    BufferedReader reader = new BufferedReader (new FileReader(filepath));
-                    String line = reader.readLine();
-                    
-                    while (line != null) {
-                        result.add(line);
-                        line = reader.readLine();
-                    }
-                    reader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+    public List<String> getSymptoms() {
+        ArrayList<String> result = new ArrayList<String>();
+
+        if (filepath != null) {
+            try {
+                BufferedReader reader = new BufferedReader(new FileReader(filepath));
+                String line = reader.readLine();
+
+                while (line != null) {
+                    result.add(line);
+                    line = reader.readLine();
                 }
+                reader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-		
-		return result;
-	}
+        }
 
+        return result;
+    }
 
-    public Map<String, Integer> countSymptoms(List<String> symptoms){        
+    public Map<String, Integer> countSymptoms(List<String> symptoms) {        
         Map<String, Integer> symptomCount = new HashMap<>();
 
-            for (String symptom : symptoms) {
+        for (String symptom : symptoms) {
             int count = symptomCount.getOrDefault(symptom, 0);
             symptomCount.put(symptom, count + 1);
-            }
+        }
+
         return symptomCount;
     } 
 
@@ -64,14 +61,13 @@ public class AnalyticsCounter{
 
     public void writeSymptoms(Map<String, Integer> symptoms) {	
         try {
-            BufferedWriter writer = new BufferedWriter (new FileWriter("result.out"));
-            for(Map.Entry<String, Integer> symptom:symptoms.entrySet()){
-                writer.write(symptom.getKey() + ": " + symptom.getValue() + "\n");
-            }	  
-        writer.close();
+            BufferedWriter writer = new BufferedWriter(new FileWriter("result.out"));
+            for (Map.Entry<String, Integer> entry : symptoms.entrySet()) {
+                writer.write(entry.getKey() + " : " + entry.getValue() + "\n");
+            }
+            writer.close();
         } catch (IOException e) {
             e.printStackTrace();
         }	
-	}
+    }
 }
- 
