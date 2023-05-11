@@ -13,8 +13,7 @@ import java.io.IOException;
 
 public class AnalyticsCounter { 
     private ISymptomReader reader;
-    private ISymptomWriter writer;
-    private String filepath;
+    private ISymptomWriter writer;    
 
     public AnalyticsCounter(ISymptomReader reader, ISymptomWriter writer) { 
         this.reader = reader;
@@ -24,9 +23,9 @@ public class AnalyticsCounter {
     public List<String> getSymptoms() {
         ArrayList<String> result = new ArrayList<String>();
 
-        if (filepath != null) {
+        if ("symptoms.txt" != null) {
             try {
-                BufferedReader reader = new BufferedReader(new FileReader(filepath));
+                BufferedReader reader = new BufferedReader(new FileReader("symptoms.txt"));
                 String line = reader.readLine();
 
                 while (line != null) {
